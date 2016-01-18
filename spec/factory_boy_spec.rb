@@ -29,7 +29,7 @@ RSpec.describe FactoryBoy do
     it { expect(subject[:admin].class).to eq(Proc)}
 
     describe 'contained Proc' do
-      subject! { FactoryBoy.instance_variable_get(:@factories)[:admin].call }
+      subject! { FactoryBoy.instance_variable_get(:@factories)[:admin].call.instance }
 
       it 'should result in a Foo object' do
         expect(subject.class).to eq(Foo)
@@ -44,5 +44,19 @@ RSpec.describe FactoryBoy do
         end
       end
     end
+  end
+
+  describe 'self.build' do
+    before do
+      FactoryBoy.define_factory(:admin, class: Foo) do
+        name "foobar"
+        admin true
+      end
+    end
+
+    subject { FactoryBoy.build(:admin, name: 'Bar', admin: false) }
+
+    it { expect(subject.name).to eq('Bar') }
+    it { expect(subject.admin).to be_falsey }
   end
 end

@@ -6,11 +6,7 @@ module FactoryBoy
   def self.define_factory(klass_sym, attributes = {}, &block)
     klass = Object.const_get(klass_name(attributes[:class] || klass_sym))
     @factories[klass_sym] = Proc.new do
-      factory = Factory.new(klass)
-      if block_given?
-        factory.instance_eval(&block)
-      end
-      factory.instance
+      Factory.define_object(klass, &block)
     end
   end
 
